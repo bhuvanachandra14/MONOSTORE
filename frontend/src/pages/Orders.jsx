@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
+import API_URL from '../config';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -8,7 +9,7 @@ const Orders = () => {
 
     useEffect(() => {
         if (user) {
-            fetch('/api/orders/myorders', {
+            fetch(`${API_URL}/orders/myorders`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }

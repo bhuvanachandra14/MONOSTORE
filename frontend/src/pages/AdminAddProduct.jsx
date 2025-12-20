@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import ToastContext from '../context/ToastContext';
+import API_URL from '../config';
 
 const AdminAddProduct = () => {
     const { user } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const AdminAddProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('/api/products', {
+            const res = await fetch(`${API_URL}/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

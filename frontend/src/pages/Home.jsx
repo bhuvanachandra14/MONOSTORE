@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import API_URL from '../config';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
@@ -9,7 +10,7 @@ const Home = () => {
     const keyword = searchParams.get('keyword') || '';
 
     useEffect(() => {
-        fetch(`/api/products?keyword=${keyword}`)
+        fetch(`${API_URL}/products?keyword=${keyword}`)
             .then(res => res.json())
             .then(data => {
                 setProducts(data);

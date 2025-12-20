@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import CartContext from '../context/CartContext';
 import ToastContext from '../context/ToastContext';
+import API_URL from '../config';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -13,7 +14,7 @@ const ProductDetails = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`/api/products/${id}`)
+        fetch(`${API_URL}/products/${id}`)
             .then(res => res.json())
             .then(data => {
                 setProduct(data);

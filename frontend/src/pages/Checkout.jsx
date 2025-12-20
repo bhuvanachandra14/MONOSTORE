@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CartContext from '../context/CartContext';
 import AuthContext from '../context/AuthContext';
 import ToastContext from '../context/ToastContext';
+import API_URL from '../config';
 
 const Checkout = () => {
     const { cartItems, clearCart } = useContext(CartContext);
@@ -40,7 +41,8 @@ const Checkout = () => {
                 product: item._id
             }));
 
-            const res = await fetch('/api/orders', {
+            // 1. Create Order on Backend
+            const res = await fetch(`${API_URL}/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
