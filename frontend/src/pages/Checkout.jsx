@@ -20,6 +20,16 @@ const Checkout = () => {
 
     const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
 
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
     const handlePlaceOrder = async () => {
         if (!user) {
             showToast('Please login to place an order', 'error');
@@ -33,36 +43,76 @@ const Checkout = () => {
         }
 
         try {
-            const orderItems = cartItems.map(item => ({
-                title: item.title,
-                qty: item.qty,
-                image: item.image,
-                price: item.price,
-                product: item._id
-            }));
+            const res = await loadRazorpay();
+            if (!res) {
+                showToast('Razorpay SDK failed to load', 'error');
+                return;
+            }
 
-            // 1. Create Order on Backend
-            const res = await fetch(`${API_URL}/orders`, {
+            // 1. Create Razorpay Order on Backend
+            const orderRes = await fetch(`${API_URL}/orders/razorpay`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({
-                    orderItems,
-                    shippingAddress: address,
-                    paymentMethod: 'Card',
-                    totalPrice
-                })
+                body: JSON.stringify({ amount: totalPrice })
             });
+            const orderData = await orderRes.json();
 
-            if (res.ok) {
-                showToast('Order placed successfully!', 'success');
-                clearCart();
-                navigate('/');
-            } else {
-                showToast('Failed to place order', 'error');
-            }
+            // 2. Open Razorpay Modal
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_RtmQmnNw90NIQ3', // Fallback for safety, but better to use env
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: 'MONOSTORE',
+                description: 'Order Payment',
+                order_id: orderData.id,
+                handler: async function (response) {
+                    // 3. Verify and Save Order on Backend
+                    const orderItems = cartItems.map(item => ({
+                        title: item.title,
+                        qty: item.qty,
+                        image: item.image,
+                        price: item.price,
+                        product: item._id
+                    }));
+
+                    const saveRes = await fetch(`${API_URL}/orders`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify({
+                            orderItems,
+                            shippingAddress: address,
+                            paymentMethod: 'Card',
+                            totalPrice,
+                            paymentResult: response // Send signature for verification
+                        })
+                    });
+
+                    if (saveRes.ok) {
+                        showToast('Order placed successfully!', 'success');
+                        clearCart();
+                        navigate('/');
+                    } else {
+                        showToast('Payment verification failed', 'error');
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                },
+                theme: {
+                    color: '#000000'
+                }
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
         } catch (error) {
             console.error(error);
             showToast('Error placing order', 'error');

@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
 const Login = () => {
@@ -45,7 +45,7 @@ const Login = () => {
                 </button>
             </form>
             <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.9rem' }}>
-                New customer? <a href="/register" style={{ textDecoration: 'underline' }}>Create an account</a>.
+                New customer? <Link to="/register" style={{ textDecoration: 'underline' }}>Create an account</Link>.
             </p>
         </div>
     );
