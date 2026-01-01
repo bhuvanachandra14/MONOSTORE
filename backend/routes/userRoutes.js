@@ -29,20 +29,21 @@ router.get('/profile', protect, async (req, res) => {
 // @route   POST /api/users/address
 // @access  Private
 
-try {
-    const user = await User.findById(req.user._id);
-    if (user) {
-        const { address, city, postalCode, country } = req.body;
-        const newAddress = { address, city, postalCode, country };
-        user.addresses.push(newAddress);
-        const updatedUser = await user.save();
-        res.json(updatedUser.addresses);
-    } else {
-        res.status(404).json({ message: 'User not found' });
+router.post('/address', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            const { address, city, postalCode, country } = req.body;
+            const newAddress = { address, city, postalCode, country };
+            user.addresses.push(newAddress);
+            const updatedUser = await user.save();
+            res.json(updatedUser.addresses);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-} catch (error) {
-    res.status(500).json({ message: error.message });
-}
 });
 
 // @desc    Delete address
