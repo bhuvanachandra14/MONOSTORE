@@ -7,7 +7,9 @@ import Register from './pages/Register';
 import AdminAddProduct from './pages/AdminAddProduct';
 
 import Checkout from './pages/Checkout';
+
 import Orders from './pages/Orders';
+import Account from './pages/Account';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
@@ -30,6 +32,7 @@ function App() {
                   <Route path="/admin/add-product" element={<AdminAddProduct />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/orders" element={<Orders />} />
+                  <Route path="/account" element={<Account />} />
                 </Routes>
               </main>
             </div>

@@ -56,6 +56,7 @@ const Navbar = () => {
                             <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>Hi, {user.name.split(' ')[0]}</span>
 
                             <Link to="/orders" style={{ fontSize: '0.9rem', textDecoration: 'underline' }}>Orders</Link>
+                            <Link to="/account" style={{ fontSize: '0.9rem', textDecoration: 'underline' }}>Account</Link>
 
                             {user.isAdmin && (
                                 <Link to="/admin/add-product" title="Add Product">

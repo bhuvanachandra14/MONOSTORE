@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://bhuvanachandra14.github.io/MONOSTORE",
+  "homepage": "https://github.com/bhuvanachandra14/MONOSTORE.git",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
